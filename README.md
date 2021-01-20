@@ -26,7 +26,9 @@ Docker 이미지를 만드려면 다음과 같이 수행합니다.
 
 ```shell script
 cd docker_image
-docker build -t goni-locust-test .
+docker build -t locust-on-k8s .
+docker tag locust-on-k8s hahafree12/locust-on-k8s
+docker push hahafree12/locust-on-k8s
 ```
 
 로컬에서는 다음과 같이 테스트 할 수 있습니다. 
@@ -34,7 +36,7 @@ docker build -t goni-locust-test .
 ```shell script
 docker run -d -p 8089:8089 -e AWS_ACCESS_KEY_ID=(AWS Access Key) \
          -e AWS_SECRET_ACCESS_KEY=(AWS Secret Access Key) \
-         -e S3_BUCKET=(Bucket Name) -e S3_KEY=(Locust file name) goni-locust-test
+         -e S3_BUCKET=(Bucket Name) -e S3_KEY=(Locust file name) locust-on-k8s
 ```
 
 ## Master 올리기
