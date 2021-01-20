@@ -43,27 +43,27 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: aws-credentials-5tb8ctbmck
+                  name: aws-credentials
                   key: aws_access_key_id
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: aws-credentials-5tb8ctbmck
+                  name: aws-credentials
                   key: aws_secret_access_key
             - name: AWS_DEFAULT_REGION
               valueFrom:
                 configMapKeyRef:
-                  name: locust-configmap-kgk7m4h69d
+                  name: locust-configmap
                   key: aws_default_region
             - name: S3_BUCKET
               valueFrom:
                 configMapKeyRef:
-                  name: locust-configmap-kgk7m4h69d
+                  name: locust-configmap
                   key: s3_bucket_name
             - name: S3_KEY
               valueFrom:
                 configMapKeyRef:
-                  name: locust-configmap-kgk7m4h69d
+                  name: locust-configmap
                   key: s3_object_key
             - name: LOCUST_MODE
               value: master
