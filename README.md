@@ -39,10 +39,70 @@ docker run -d -p 8089:8089 -e AWS_ACCESS_KEY_ID=(AWS Access Key) \
 
 ## Master 올리기
 
+먼저 환경변수 설정을 해 봅시다. `kustomization/kustomization.yaml` 파일의 값을 적절히 설정하고 다음 명령을 입력합니다.
 
+```shell script
+kubectl --kubeconfig $KUBE_CONFIG apply -k kustomization
+configmap/locust-configmap-(Random Value) created
+secret/aws-credentials-(Random Value) unchanged
+```
+
+master_service.yaml, worker_deployment.yaml 파일에서 다음 값을 변경해 줍니다. `(Random Value)`로 표시된 값은 앞에서 실행한 결과에 따라 바꿔줍니다.
+
+* locust-configmap -> locust-configmap-(Random Value)
+* aws-credentials -> aws-credentials-(Random Value)
+
+그리고 master를 올려봅시다. 
+
+```shell script
+kubectl --kubeconfig $KUBE_CONFIG apply -f k8s_config/master_service.yaml
+```
+
+LoadBalancer를 생성하도록 했기 때문에, 서비스를 확인해 보면 로드 밸런서의 주소를 알 수 있습니다.
+
+```shell script
+kubectl --kubeconfig $KUBE_CONFIG get services 
+NAME            TYPE           CLUSTER-IP      EXTERNAL-IP                  PORT(S)                                      AGE
+kubernetes      ClusterIP      198.19.128.1    <none>                       443/TCP                                      33m
+locust-master   LoadBalancer   198.19.134.43   (Address of Load Balancer)   80:32109/TCP,5057:32752/TCP,5058:30039/TCP   76s
+```
+
+웹 브라우저에서 Load Balancer의 주소로 들어가보면, Locust의 UI를 볼 수 있습니다.
 ## Worker 올리기
 
+그리고 이번에는 Worker를 올려보겠습니다. 먼저 master 역할을 하는 pod의 IP를 확인합니다.
 
+```shell script
+kubectl --kubeconfig $KUBE_CONFIG get pods -o wide
+NAME                             READY   STATUS    RESTARTS   AGE     IP             NODE          NOMINATED NODE   READINESS GATES
+locust-master-67f6dc68bb-mmkw2   1/1     Running   0          16m     198.18.0.40    (Node Name)   <none>           <none>
+```
 
-## 테스트 하기
+IP 주소를 바탕으로 `kustomization_master/kustomization.yaml` 파일의 `locust_master_host` 값을 수정해 줍니다.
+
+그리고 이를 바탕으로 ConfigMap을 생성합니다. 
+
+```shell script
+kubectl --kubeconfig $KUBE_CONFIG apply -k kustomization_master                  
+configmap/locust-master-configmap-(Random Value) created
+```
+
+worker_deployment.yaml 파일에서 다음 값을 변경해 줍니다. `(Random Value)`로 표시된 값은 앞에서 실행한 결과에 따라 바꿔줍니다.
+
+* locust-master-configmap -> locust-master-configmap-(Random Value)
+
+이제 Worker를 deploy 해 보겠습니다. 
+
+```shell script
+kubectl --kubeconfig $KUBE_CONFIG apply -f k8s_config/worker_deployment.yaml
+```
+
+그리고 master 사이트로 들어가 보면, 우측 상단의 Workers 수가 2로 조정된 것을 볼 수 있습니다. 
+
+## 정리하기
+
+```shell script
+kubectl --kubeconfig $KUBE_CONFIG delete -f k8s_config/worker_deployment.yaml
+kubectl --kubeconfig $KUBE_CONFIG delete -f k8s_config/master_service.yaml
+```
 
