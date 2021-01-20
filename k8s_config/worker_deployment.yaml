@@ -55,8 +55,3 @@ spec:
                 configMapKeyRef:
                   name: locust-master-configmap-665h9k5gdk
                   key: locust_master_host
-            - name: LOCUST_MASTER_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: locust-master-configmap-665h9k5gdk
-                  key: locust_master_port

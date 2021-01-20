@@ -14,5 +14,5 @@ if [ -z $LOCUST_MODE ]; then
 elif [ $LOCUST_MODE == "master" ]; then
     locust --master
 else
-    locust --worker --master-host $LOCUST_MASTER_HOST --master-port $LOCUST_MASTER_PORT
+    locust --worker --master-host $LOCUST_MASTER_HOST
 fi

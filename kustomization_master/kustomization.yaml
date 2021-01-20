@@ -2,4 +2,3 @@ configMapGenerator:
   - name: locust-master-configmap
     literals:
       - locust_master_host=(IP address of master pod)
-      - locust_master_port=5557
