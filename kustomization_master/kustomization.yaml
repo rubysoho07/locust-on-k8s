@@ -1,4 +1,0 @@
-configMapGenerator:
-  - name: locust-master-configmap
-    literals:
-      - locust_master_host=(IP address of master pod)

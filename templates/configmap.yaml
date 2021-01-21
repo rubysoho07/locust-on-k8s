@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: locust-configmap
+data:
+  aws_default_region: ap-northeast-2
+  s3_bucket_name: your_bucket_name
+  s3_object_key: your_object_key
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: locust-master-configmap
+data:
+  locust_master_host: your_locust_master
