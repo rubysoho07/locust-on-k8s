@@ -51,7 +51,4 @@ spec:
             - name: LOCUST_MODE
               value: worker
             - name: LOCUST_MASTER_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: locust-master-configmap
-                  key: locust_master_host
+              value: locust-master-0.locust-master.default.svc.cluster.local

@@ -14,7 +14,7 @@ spec:
     app: locust-master
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: locust-master
   labels:
@@ -24,6 +24,7 @@ spec:
   selector:
     matchLabels:
       app: locust-master
+  serviceName: locust-master
   template:
     metadata:
       labels:
