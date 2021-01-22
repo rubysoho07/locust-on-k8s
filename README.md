@@ -114,7 +114,28 @@ kubectl --kubeconfig $KUBE_CONFIG delete -f k8s_config/master_service.yaml
 helm install --set aws_access_key_id=(Base64 encoded AWS access key) \
 --set aws_secret_access_key=(Base64 encoded AWS secret access key) \
 --set s3_bucket_name=(S3 Bucket Name) \
---set s3_object_key=(S3 Object Key) (your release name) .
+--set s3_object_key=(S3 Object Key) \
+--set aws_default_region=(AWS Region Name: e.g. - ap-northeast-2)
+(your release name) .
+```
+
+## Worker 개수 조정하기
+
+values.yaml 파일을 수정합니다. (기본값은 2입니다.) 
+
+```yaml
+worker_replicas: 4
+```
+
+그리고 Helm Chart를 업그레이드 해 줍니다.
+
+```shell script
+helm upgrade --set aws_access_key_id=(Base64 encoded AWS access key) \
+--set aws_secret_access_key=(Base64 encoded AWS secret access key) \
+--set s3_bucket_name=(S3 Bucket Name) \
+--set s3_object_key=(S3 Object Key) \
+--set aws_default_region=(AWS Region Name: e.g. - ap-northeast-2)
+(your release name) .
 ```
 
 ## Helm Chart 삭제하기
