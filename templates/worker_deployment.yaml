@@ -14,41 +14,43 @@ spec:
       labels:
         app: locust-worker
     spec:
+      volumes:
+        - name: locust-files
+          emptyDir: {}
       containers:
         - name: locust-worker
-          image: "hahafree12/locust-on-k8s"
+          image: "hahafree12/locust-on-k8s:git_sync"
+          imagePullPolicy: Always
           ports:
             - containerPort: 5557
               name: worker-port1
             - containerPort: 5558
               name: worker-port2
           env:
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: aws-credentials
-                  key: aws_access_key_id
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: aws-credentials
-                  key: aws_secret_access_key
-            - name: AWS_DEFAULT_REGION
-              valueFrom:
-                configMapKeyRef:
-                  name: locust-configmap
-                  key: aws_default_region
-            - name: S3_BUCKET
-              valueFrom:
-                configMapKeyRef:
-                  name: locust-configmap
-                  key: s3_bucket_name
-            - name: S3_KEY
-              valueFrom:
-                configMapKeyRef:
-                  name: locust-configmap
-                  key: s3_object_key
             - name: LOCUST_MODE
               value: worker
             - name: LOCUST_MASTER_HOST
               value: locust-master-0.locust-master.default.svc.cluster.local
+          volumeMounts:
+            - name: locust-files
+              mountPath: "/locust"
+        - name: git-sync
+          image: "registry.k8s.io/git-sync/git-sync:v3.6.5"
+          env:
+            {{- with .Values.git_sync }}
+            - name: GIT_SYNC_REPO
+              value: {{ .repo }}
+            - name: GIT_SYNC_BRANCH
+              value: {{ .branch | default "main" }}
+            {{- end }}
+            - name: GIT_SYNC_USERNAME
+              value: {{ .Values.git_username }}
+            - name: GIT_SYNC_PASSWORD
+              value: {{ .Values.git_password }}
+            - name: GIT_SYNC_ROOT
+              value: "/locust"
+            - name: GIT_SYNC_DEST
+              value: "my-locust-files"
+          volumeMounts:
+            - name: locust-files
+              mountPath: "/locust"

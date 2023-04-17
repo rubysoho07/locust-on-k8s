@@ -1,11 +1,8 @@
-FROM python:3.9-slim
-
-RUN apt-get update -qq && \
-    apt-get install -y -qq build-essential && \
-    pip install locust awscli
+FROM python:3.10-slim
 
 WORKDIR /locust
 
-COPY run_locust.sh /locust
+RUN pip install -q locust
+COPY run_locust.sh /root
 
-CMD [ "sh", "-c", "/locust/run_locust.sh" ]
+CMD [ "sh", "-c", "/root/run_locust.sh" ]

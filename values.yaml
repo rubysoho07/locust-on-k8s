@@ -1,1 +1,5 @@
 worker_replicas: 2
+
+git_sync:
+  repo: https://github.com/rubysoho07/locust-files
+  branch: main

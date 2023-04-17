@@ -1,18 +1,27 @@
 #!/bin/bash
 
-# Download Locustfile from S3
-if [ -z $S3_ENDPOINT ]; then
-    aws s3 cp s3://$S3_BUCKET/$S3_KEY locustfile.py
-else
-    # For S3 Compatible Storage
-    aws --endpoint-url $S3_ENDPOINT s3 cp s3://$S3_BUCKET/$S3_KEY locustfile 
-fi
+# Check locustfile.py exists (retry 10 times * 10 seconds)
+RETRY=0
+TARGET_FILE="my-locust-files/locustfile.py"
+while [ ! -f /locust/$TARGET_FILE ]; do
+    RETRY=$(expr $RETRY + 1)
+
+    if [ $RETRY -gt 10 ]; then 
+        echo "Retry attempts exceeded, exit script"
+        exit $RETRY
+    fi
+
+    echo "locustfile.py doesn't exist. Retry ... ($RETRY)"
+    sleep 10
+done
+
+COMMON_ARGS="-f $TARGET_FILE"
 
 # Master / Worker mode
 if [ -z $LOCUST_MODE ]; then
-    locust
+    locust $COMMON_ARGS
 elif [ $LOCUST_MODE == "master" ]; then
-    locust --master
+    locust --master $COMMON_ARGS
 else
-    locust --worker --master-host $LOCUST_MASTER_HOST
+    locust --worker --master-host $LOCUST_MASTER_HOST $COMMON_ARGS
 fi

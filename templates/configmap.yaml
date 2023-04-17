@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: locust-configmap
-data:
-  aws_default_region: {{ .Values.aws_default_region }}
-  s3_bucket_name: {{ .Values.s3_bucket_name }}
-  s3_object_key: {{ .Values.s3_object_key }}
